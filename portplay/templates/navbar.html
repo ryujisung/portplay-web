@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff; /* 배경 색상을 하얀색으로 설정 */
+}
+.navbar {
+    background-color: #ffffff !important; /* 네비게이션 바의 배경 색상을 하얀색으로 설정, 다른 스타일을 오버라이드 */
+    border-bottom: 1px solid #ddd; /* 하단 테두리 설정 */
+}
+.navbar-light .navbar-nav .nav-link {
+    color: #555; /* 네비게이션 링크 색상 설정 */
+}
+a, a:link, a:visited {
+       color: black; /* 링크 색상을 검정색으로 설정 */
+       text-decoration: none; /* 밑줄 제거 */
+   }
+   
+   /* 링크 hover 상태 */
+   a:hover {
+       color: black !important;/* hover 시 색상을 검정색으로 설정 */
+       text-decoration: none !important; /* 밑줄 제거, 다른 스타일을 덮어쓰기 위해 !important 사용 */
+   }
+   
+   /* 링크 active 상태 */
+   a:active {
+       color: black; /* active 시 색상을 검정색으로 설정 */
+       text-decoration: none; /* 밑줄 제거 */
+   }
+
+.navbar-brand img {
+    height: 40px; /* 로고의 높이 설정 */
+}
+.search-bar {
+    margin-left: 10px; /* 검색 바와 로고 사이의 간격 설정 */
+    margin-right: 10px; /* 검색 바와 로그인/회원가입 링크 사이의 간격 설정 */
+}
+.search-input {
+    min-width: 200px;
+    width: 100%; /* 검색 입력창이 부모 요소의 전체 너비를 차지하도록 설정 */
+}
+.nav-item {
+    margin-left: 10px; /* 링크들 사이의 간격 설정 */
+}
+.navbar-toggler {
+    border-color: rgba(0,0,0,.1); /* 토글 버튼의 테두리 색상 설정 */
+}
+.collapse-navbar-collapse{
+  display:flex;
+}
+/* 파일 생성 버튼 스타일 */
+.create-file-link {
+    background-color: #51DC91; /* 배경 색상 설정 */
+    color: white; /* 글씨 색상을 하얀색으로 설정 */
+    padding: 5px 10px; /* 패딩 설정 */
+    border-radius: 5px; /* 모서리 둥글게 설정 */
+    margin-left: 10px; /* 왼쪽 마진 설정 */
+}
+
+.create-file-link:hover{
+  background-color: white; /* 호버 상태 및 클릭 상태 배경 색상 변경 */
+  color: #45c27b !important; /* 호버 상태 및 클릭 상태 글씨 색상 유지 */
+  border: 1px solid #45c27b ;
+  font-weight: bold;
+}
+.create-file-link,
+.create-file-link:active {
+    background-color: #45c27b; /* 호버 상태 및 클릭 상태 배경 색상 변경 */
+    color: white !important; /* 호버 상태 및 클릭 상태 글씨 색상 유지 */
+    text-decoration: none; /* 호버 상태 및 클릭 상태 밑줄 제거 */
+    border: 1px solid white ;
+    font-weight: bold;
+}
+.navbar {
+  padding: 0.5rem 1rem; /* 상단과 하단 패딩을 줄임 */
+}
+
+.navbar-brand img {
+  height: 30px; /* 로고 이미지의 높이를 줄임 */
+}
+
+.nav-item .nav-link {
+  padding: 0.25rem 0.5rem; /* 링크의 패딩을 줄임 */
+  font-size: 0.875rem; /* 링크의 폰트 크기를 줄임 */
+}
+
+.search-input {
+  padding: 0.25rem 0.75rem; /* 검색 입력창의 패딩을 줄임 */
+  font-size: 0.875rem; /* 검색 입력창의 폰트 크기를 줄임 */
+}
+/* 네비게이션 바 내부 수직 중앙 정렬을 위한 스타일 */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* 로고, 검색 바, 그리고 링크들을 공간 분배 */
+}
+
+/* 파일 생성 버튼 스타일 */
+.create-file-link {
+    display: inline-flex; /* 버튼 내부의 텍스트와 아이콘을 위한 flexbox 설정 */
+    align-items: center; /* 버튼 내부의 텍스트와 아이콘을 수직 중앙 정렬 */
+    justify-content: center; /* 수평 중앙 정렬 */
+    padding: 5px 15px; /* 좌우 패딩을 늘려줍니다 */
+    border-radius: 5px;
+    text-align: center; /* 텍스트를 가운데 정렬 */
+    margin-left: 10px; /* 좌측 여백 */
+    font-weight: 600; /* 글씨 굵게 */
+    text-decoration: none; /* 링크의 밑줄을 제거 */
+}
+
+/* 검색 바 컨테이너 스타일 */
+.search-bar {
+    display: flex;
+    flex-grow: 1; /* 검색 바가 가능한 만큼의 공간을 차지하도록 설정 */
+    margin: 0 10px; /* 좌우 여백 설정 */
+}
+
+/* 기타 링크 스타일 */
+.nav-link {
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+}
+
+
+
+/* 네비게이션 토글 버튼 스타일 */
+.navbar-toggler {
+  padding: 0.25rem 0.5rem; /* 토글 버튼의 패딩을 줄임 */
+}
+
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(0, 0, 0, 0.5)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3Csv
+    </style>
+
+</head>
+<body>
+  {% load static %}
+<!-- 네비게이션바 -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+  <div class="container-fluid">
+    <!-- 로고 이미지로 변경 -->
+    <a class="navbar-brand" href="{% url 'app:file_list' %}">
+      <img src="{% static 'Vector.png' %}" alt="Portplay Logo"> <!-- 로고 이미지 경로 설정 -->
+    </a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse-navbar-collapse" id="navbarSupportedContent">
+      <form class="d-flex search-bar" action="{% url 'app:file_list' %}" method="get">
+        <input type="text" name="search" id="search"  class="form-control me-2 search-input"  aria-label="Search" placeholder="작성자 또는 제목 검색" value="{{ request.GET.search }}">
+    </form>
+
+          {% if user.is_authenticated %}
+          <a class="nav-link create-file-link" href="{% url 'app:create_file' %}">파일 생성</a>
+          <a class="nav-link" href="{% url 'common:logout' %}">{{ user.username }} (로그아웃)</a>
+          {% else %}
+          <a class="nav-link" href="{% url 'common:login' %}">로그인</a>
+          <a class="nav-link" href="{% url 'common:signup' %}">회원가입</a>
+          {% endif %}
+
+    </div>
+  </div>
+</nav>
+
+<!-- Bootstrap JS, Popper.js, and jQuery -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+</body>

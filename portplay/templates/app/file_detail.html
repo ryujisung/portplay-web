@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ko">
+    {% extends "base.html" %}
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ file_info.file.subject }}</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        .image-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .image-gallery img {
+            display : block;
+            margin : auto;
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+        }
+        .fixed-actions {
+            position: fixed;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+        }
+        .action-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            margin-bottom: 10px;
+            border-radius: 50%;
+            background: #ddd;
+            color: #333;
+            text-align: center;
+            line-height: 50px;
+            text-decoration: none;
+            border: none; 
+            font-size: 14px; 
+        }
+        /* 이모지와 숫자 사이의 간격을 추가합니다 */
+        .likes-count {
+            margin-top: -33px; 
+        } 
+        .like_ic {
+            margin-top:6px; 
+        } 
+        h1{
+            margin-top:30px;
+        }
+        
+        .comment-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+    
+        .comment-content {
+            margin-bottom: 10px; /* 댓글 내용과 버튼 사이의 간격 */
+        }
+    
+        .comment-author {
+            display : inline-block;
+            font-weight: bold;
+            margin-bottom: 5px; /* 작성자 이름과 댓글 내용 사이의 간격 */
+        }
+    
+        .comment-date {
+            display : inline-block;
+            margin-left : 5px;
+            font-size : 0.5em;
+            margin-bottom: 5px; /* 작성자 이름과 댓글 내용 사이의 간격 */
+        }
+    
+        .comment-footer {
+            display: flex;
+            justify-content: flex-end; /* 수정, 삭제 버튼을 오른쪽으로 정렬 */
+        }
+    
+        .comment-footer a {
+            margin-left: 5px; /* 수정, 삭제 버튼 사이의 간격 */
+        }
+    
+        .comment-footer a:first-child {
+            margin-left: 0; /* 첫 번째 버튼의 왼쪽 여백 제거 */
+        }
+        .comment-section {
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+        
+        .comment-form {
+            display: block;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        
+        .comment-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        
+        .comment-form button {
+            float: right;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .comment-form button:hover {
+            background-color: #0056b3;
+        }
+        .file-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+
+        .file-title {
+            display:flex;
+            margin-top : 70px;
+            font-size: 3em;
+            font-weight: bold;
+        }
+
+        .file-meta {
+            display: inline-block;
+            align-items: center;
+            font-size: 0.9em;
+            color: #0000000;
+        }
+
+        .file-meta span {
+            margin-right: 15px;
+        }
+
+        .more-info {
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            border: 1px solid #000;
+            border-radius: 50%;
+            display: inline-block;
+            text-align: center;
+            line-height: 18px; /* Adjust line height to vertically center the dots inside the circle */
+            vertical-align: middle; /* Align the icon vertically */
+            font-size: 20px;
+            color: #000;
+            text-decoration: none;
+        }
+        
+        .more-info:hover {
+            text-decoration: none;
+            background-color: #f0f0f0;
+        }
+        
+        
+        .hidden-info {
+            display: none;
+        }
+        /* 기존 스타일은 유지하면서 추가 */
+.comment-section {
+    margin: auto;
+}
+
+.comment-card {
+    width: 100%; /* 댓글 카드의 너비를 조정합니다 */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* 선택적으로 그림자 효과를 추가할 수 있습니다 */
+    margin-bottom: 20px; /* 댓글 카드 사이의 간격 */
+}
+
+.comment-form {
+    width: 100%; /* 폼의 너비를 조정합니다 */
+    margin-top: 20px; /* 폼과 이전 요소 사이의 간격 */
+}
+
+.comment-form textarea {
+    width: calc(100% - 20px); /* 패딩을 고려하여 너비를 조정합니다 */
+    margin-bottom: 10px; /* 버튼과의 간격 */
+}
+
+.comment-form button {
+    width: auto; /* 버튼의 너비를 자동으로 조정합니다 */
+    padding: 10px 20px;
+}
+
+/* 댓글 폼과 등록 버튼을 위한 추가 스타일 */
+.form-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.form-count{
+    margin-top : 30px;
+}
+
+.form-group .btn {
+    margin-left: 10px; /* 버튼과 입력 필드 사이의 간격 */
+}
+
+/* 모바일 화면에 대한 반응형 디자인 */
+@media (max-width: 768px) {
+    .form-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .form-group .btn {
+        width: 100%; /* 모바일 화면에서 버튼의 너비를 100%로 조정 */
+        margin-top: 10px; /* 입력 필드와 버튼 사이의 간격 */
+    }
+}
+.btn-primary{
+    margin-bottom : 50px;
+}
+
+    </style>
+</head>
+<body>
+    
+    <div class="container">
+        <div class="file-header">
+            <div>
+                <div class="file-meta">
+                    {%if file_info.file.modify_date%}
+                        <div class="file-title">{{ file_info.file.subject }}</div>
+                        <span>{{ file_info.file.author }}</span>
+                        <span>{{file_info.file.modify_date|date:"Y. m. d. H:i" }}(수정됨)</span>
+    
+    
+                    {%else%}
+                         <div class="file-title">{{ file_info.file.subject }}</div>
+                         <span>{{ file_info.file.author }}</span>
+                         <span>{{ file_info.file.create_date|date:"Y. m. d. H:i" }}</span>
+                         
+     
+                    {% endif %}
+                
+                  
+                </div>
+            </div>
+            <div class="file-actions">
+                {% if request.user == file_info.file.author %}
+                    <a href="{% url 'app:file_modify' file_info.file.id %}" class="btn btn-sm btn-outline-secondary">수정</a>
+                    <a href="#" class="delete btn btn-sm btn-outline-secondary" data-uri="{% url 'app:file_delete' file_info.file.id %}">삭제</a>
+                {% endif %}
+            </div>
+        </div>
+        <span>{{ file_info.file.content}}</span>
+    </div>
+        <div class="container">
+            
+        
+        <div class="image-gallery">
+            {% for image_path in file_info.image_url %}
+            <img src="{{ image_path }}" alt="PDF page image">
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="fixed-actions">
+        <a href="#comment-create" class="action-button">💬</a>
+        <a href="javascript:void(0)" class="action-button" onclick="toggleLike({{ file_info.file.id }})">
+            {% if request.user in file_info.file.voter.all %}
+            <span class="like_ic">❤️</span>
+            <span class="likes-count">{{ file_info.file.likes }}</span>
+            {% else %}
+            <span class="like_ic">🤍</span>
+            <span class="likes-count">{{ file_info.file.likes }}</span>
+            {% endif %}
+            
+        </a>
+
+        
+        
+        <a href="javascript:void(0)" class="action-button" onclick="copyCurrentUrl()">🔗</a>
+    </div>
+    <div class = "container">
+        <label for="content" class="form-count">댓글 : {{comments.count}}</label>
+        <hr>
+        
+        {% for comment in comments %}
+        <div class="comment-card">
+            <div class="comment-author">{{ comment.author.username }}</div> 
+            {%if comment.modify_date%}
+            <div class = "comment-date"> {{comment.modify_date|date:"Y. m. d. H:i" }}(수정됨)</div>
+            {%else%}
+            <div class = "comment-date"> {{comment.creation_date|date:"Y. m. d. H:i" }}</div>
+            {%endif%}
+            <div class="comment-content">{{ comment.content }}</div>
+            <div class="comment-footer">
+                {% if request.user == comment.author %}
+                    <a href="{% url 'app:comment_modify' comment.id %}" class="btn btn-sm btn-outline-secondary">수정</a>
+                    <a href="#" class="delete btn btn-sm btn-outline-secondary" data-uri="{% url 'app:comment_delete' comment.id %}">삭제</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+
+        
+    </div>
+    <div class="container" id="comment-create">
+    <form action="{% url 'app:comment_create' file_info.file.id %}" method="post" class="comment-form">
+        {% csrf_token %}
+        {% if form.errors %}
+            <div class="alert alert-danger" role="alert">
+                <ul>
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <li><strong> 댓글내용 :</strong>  내용을 입력해주세요</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        
+        <div class="mb-3">
+            <label for="content" class="form-label">댓글내용</label>
+            <textarea {% if not user.is_authenticated %}disabled{% endif %} name="content" id="content" class="form-control" rows="4">{{ form.content.value }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">등록</button>
+    </form>
+</div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script >
+        function copyCurrentUrl() {
+            // 현재 URL을 가져옵니다.
+            const url = window.location.href;
+
+            // 텍스트를 복사하기 위한 임시 텍스트 영역을 생성합니다.
+            const textArea = document.createElement("textarea");
+            textArea.value = url;
+            document.body.appendChild(textArea);
+
+            // 텍스트 영역을 선택합니다.
+            textArea.select();
+
+            // 선택된 텍스트를 클립보드에 복사합니다.
+            document.execCommand("copy");
+
+            // 임시 텍스트 영역을 제거합니다.
+            document.body.removeChild(textArea);
+
+            // 사용자에게 알림을 표시합니다. (옵션)
+            alert("링크가 복사되었습니다");
+        }
+
+        function toggleLike(fileId) {
+            $.ajax({
+                url: '/app/like_file/' + fileId+'/', // Django URL 경로에 맞게 조정
+                type: 'POST',
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'file_id': fileId,
+                },
+                success: function(response) {
+                    // 서버로부터 응답을 받으면 좋아요 상태를 업데이트합니다.
+                    if(response.liked) {
+                        $('.like_ic').text('❤️');
+                    } else {
+                        $('.like_ic').text('🤍');
+                    }
+                    $('.likes-count').text(response.likes);
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX 요청 실패: ", status, error);
+                }
+            });
+            
+        }
+        const delete_elements = document.getElementsByClassName("delete");
+                Array.from(delete_elements).forEach(function (element) {
+                    element.addEventListener("click", function () {
+                        if (confirm("정말로 삭제하시겠습니까?")) {
+                            location.href = this.dataset.uri;
+                        }
+                });
+            });
+            
+            
+    </script>
+    
+</body> 
+{% endblock %}
+</html>

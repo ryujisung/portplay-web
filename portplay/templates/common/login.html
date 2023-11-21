@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow-lg">
+        <div class="card-body">
+          <h3 class="card-title text-center mb-4">로그인</h3>
+          <form method="post" action="{% url 'common:login' %}">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}" />
+            {% include "form_errors.html" %}
+
+            <div class="form-group mb-3">
+              <label for="username" class="form-label">사용자ID</label>
+              <input type="text" class="form-control" name="username" id="username" placeholder="아이디를 입력하세요" value="{{ form.username.value|default_if_none:'' }}" />
+            </div>
+
+            <div class="form-group mb-3">
+              <label for="password" class="form-label">비밀번호</label>
+              <input type="password" class="form-control" name="password" id="password" placeholder="비밀번호를 입력하세요" value="{{ form.password.value|default_if_none:'' }}" />
+            </div>
+
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary btn-lg">로그인</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

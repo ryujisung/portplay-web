@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow">
+        <div class="card-body">
+          <h3 class="card-title text-center mb-4">회원가입</h3>
+          <form method="post" action="{% url 'common:signup' %}">
+            {% csrf_token %}
+            {% include "form_errors.html" %}
+            <div class="form-group mb-3">
+              <label for="username" class="form-label">사용자 이름</label>
+              <input type="text" class="form-control" name="username" id="username" placeholder="사용자 이름을 입력하세요" value="{{ form.username.value|default_if_none:'' }}" />
+            </div>
+            <div class="form-group mb-3">
+              <label for="password1" class="form-label">비밀번호</label>
+              <input type="password" class="form-control" name="password1" id="password1" placeholder="비밀번호를 입력하세요" value="{{ form.password1.value|default_if_none:'' }}" />
+            </div>
+            <div class="form-group mb-3">
+              <label for="password2" class="form-label">비밀번호 확인</label>
+              <input type="password" class="form-control" name="password2" id="password2" placeholder="비밀번호를 다시 입력하세요" value="{{ form.password2.value|default_if_none:'' }}" />
+            </div>
+            <div class="form-group mb-3">
+              <label for="email" class="form-label">이메일</label>
+              <input type="email" class="form-control" name="email" id="email" placeholder="이메일 주소를 입력하세요" value="{{ form.email.value|default_if_none:'' }}" />
+            </div>
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary btn-lg">생성하기</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

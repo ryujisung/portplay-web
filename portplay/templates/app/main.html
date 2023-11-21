@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>portplay</title>
+    <!-- Bootstrap CSS 포함 -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        .image-container {
+            padding: 5px;
+        }
+        .image-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+        .file-content {
+            text-align: center;
+            margin-top: 10px;
+        }
+        .cropped1 {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+       }
+       .image{
+        margin : 20px;
+       }
+       a, a:link, a:visited {
+           color: black; /* 링크 색상을 검정색으로 설정 */
+           text-decoration: none; /* 밑줄 제거 */
+       }
+       
+       /* 링크 hover 상태 */
+       a:hover {
+           color: black !important;/* hover 시 색상을 검정색으로 설정 */
+           text-decoration: none !important; /* 밑줄 제거, 다른 스타일을 덮어쓰기 위해 !important 사용 */
+       }
+       
+       /* 링크 active 상태 */
+       a:active {
+           color: black; /* active 시 색상을 검정색으로 설정 */
+           text-decoration: none; /* 밑줄 제거 */
+       }
+       img:hover{
+        opacity : 0.5;
+       }
+       .description {
+        display: flex;
+        justify-content: space-between; /* 요소들을 양 끝에 정렬합니다 */
+        align-items: center; /* 요소들을 세로 방향으로 가운데 정렬합니다 */
+        margin-top: 10px; /* 여백을 추가합니다 */
+    }
+    
+    .author,
+    .likes {
+        margin: 0; /* 기본 마진을 제거합니다 */
+        padding: 0; /* 기본 패딩을 제거합니다 */
+    }
+    
+    /* 필요에 따라 좋아요 텍스트에 특정 스타일을 적용할 수 있습니다 */
+    .likes {
+        margin-left: 10px; /* 작성자와 좋아요 사이에 공간을 추가합니다 */
+    }
+    .sort-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .sort-label {
+        color: grey;
+        margin-right: 10px;
+        margin-top:8px;
+        margin-left : 10px;
+    }
+    .sort-select {
+        border: none;
+        outline: none;
+        font-weight: bold;
+        color: black;
+        background-color: transparent;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-repeat: no-repeat;
+        background-position: right 5px center;
+        padding-right: 15px;
+    }
+    .sort-select-wrapper {
+        position: relative;
+        display: inline-block;
+    }
+    .sort-select-wrapper::after {
+        content: ' \25BC';
+        color: grey;
+        pointer-events: none;
+        position: absolute;
+        right: 8px;
+    }
+    
+    .pagination{
+        margin-top:100pxl
+    }
+
+    </style>
+</head><!-- 생략 -->
+<body>
+    {% extends 'base.html' %}
+
+    {% block content %}
+    <div class="sort-container">
+        <label for="sort" class="sort-label">정렬 방식</label>
+        <form action="{% url 'app:file_list' %}" method="get" id="sortForm">
+            <input type="hidden" name="search" value="{{ request.GET.search }}">
+            <select id="sort" class="sort-select" name="sort" onchange="this.form.submit();">
+                <option value="latest" {% if request.GET.sort == 'latest' %} selected{% endif %}>최신순</option>
+                <option value="likes" {% if request.GET.sort == 'likes' %} selected{% endif %}>추천순</option>
+            </select>
+        </form>
+    </div>
+    <div class="container-fluid">
+        {% if files_with_images %}
+            <div class="row">
+                {% for item in files_with_images %}
+                <a href="{% url 'app:detail' item.file.id %}">
+    
+                    <div class = "image">
+                        
+                        <!-- 이미지 경로를 확인하고 이미지 태그의 src 속성에 사용합니다 -->
+                        {% if item.image_url %}
+                            <img class = "cropped1" src={{item.image_url}} alt="{{ item.file.subject }}">
+                        {% else %}
+                        <p>{{ item.image_path }}</p>
+                    {% endif %}
+                    <div class="description">
+                        <p class="author">{{item.file.subject}}</p>
+                        <p class="likes">❤️  {{ item.file.likes }}</p>
+                    </div>
+                    
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            <!-- 페이징처리 시작 -->
+    
+    </div>
+    
+    <ul class="pagination justify-content-center">
+        <!-- 이전 페이지 -->
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}&sort={{ request.GET.sort|default:'latest' }}">이전</a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" tabindex="-1" aria-disabled="true">이전</a>
+            </li>
+        {% endif %}
+    
+        <!-- 페이지 리스트 -->
+        {% for page_number in page_obj.paginator.page_range %}
+            {% if page_number == page_obj.number %}
+                <li class="page-item active" aria-current="page">
+                    <a class="page-link" href="?page={{ page_number }}&sort={{ request.GET.sort|default:'latest' }}">{{ page_number }}</a>
+                </li>
+            {% else %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_number }}&sort={{ request.GET.sort|default:'latest' }}">{{ page_number }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+    
+        <!-- 다음 페이지 -->
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}&sort={{ request.GET.sort|default:'latest' }}">다음</a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" tabindex="-1" aria-disabled="true">다음</a>
+            </li>
+        {% endif %}
+    </ul>
+    <!-- 페이징처리 끝 -->
+        {% else %}
+            <p>파일이 없습니다.</p>
+        {% endif %} 
+        {% endblock %}
+</body>
+</html>
