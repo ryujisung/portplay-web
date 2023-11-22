@@ -13,7 +13,6 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_POST
 app_name = 'app' 
-
 def file_list(request):
     search_query = request.GET.get('search', '')
     sort = request.GET.get('sort', 'latest')
@@ -29,11 +28,11 @@ def file_list(request):
     # 정렬 조건을 적용합니다.
     if sort == 'likes':
         files_list = files_list.order_by('-likes')
-    else:  # 기본 정렬은 'latest'로, 생성 날짜 기준으로 내림차순 정렬합니다.
+    else:
         files_list = files_list.order_by('-create_date')
 
-    paginator = Paginator(files_list, 5)  # 페이지당 5개의 파일을 보여주도록 설정합니다.
-    page = request.GET.get('page')  # URL에서 페이지 번호를 가져옵니다.
+    paginator = Paginator(files_list, 5)
+    page = request.GET.get('page')
 
     try:
         files = paginator.page(page)
@@ -50,9 +49,13 @@ def file_list(request):
             'image_url': image_url
         })
 
+    # 현재 검색 쿼리를 페이지네이션 링크에 추가합니다.
+    page_query = '&search=' + search_query if search_query else ''
+
     return render(request, 'app/main.html', {
         'files_with_images': files_with_images,
-        'page_obj': files  # 페이징 객체 추가
+        'page_obj': files,
+        'page_query': page_query  # 추가된 부분
     })
 
 
